@@ -31,10 +31,11 @@ export interface FlaggedWord {
 
 export interface WordList {
     id: DBID;
-    from: DBID;
+    from?: DBID; // User
     words: Word[];
     shared: boolean;
     public: boolean;
+    system: boolean; // Is predefined word list
     stars: DBID[]; // User
 }
 
@@ -46,25 +47,30 @@ export interface UsersWordLists {
 
 export interface Lobby {
     id: DBID;
+    founder: DBID; // User
+    founded: Date;
     players: DBID[]; // User
-    customWords: string[]; // Only for this lobby, everything else in wordlist
     wordLists: WordList[];
     gameRules: GameRules;
     token: string;
     public: boolean;
     gameStarted: boolean;
-    lobby?: DBID;
-    rounds: number;
+    game?: DBID;
+    round: number; // Number of games played
     gameEvents: GameEvent[];
 }
 
 export interface GameRules {
     id: DBID;
-    maxRounds: number; // Default 4
+    maxRounds: number; // Default 4 - rounds in one game, how often everyone can say one word
+    rounds: number; // Default 4 - how many different games will be played
     maxPlayers: number; // Default 4
     timeLimited: boolean;
     timeLimit: number; // In seconds
     allowSpecialGameMode: boolean; // Later features
+    membersCanAddWordLists: boolean; // Default false
+    membersCanAddCustomWordLists: boolean; // Default false
+    lobby: DBID;
 }
 
 export interface Game {
@@ -80,14 +86,15 @@ export interface Game {
 export enum GameEventType {
     VotedCorrectly,
     VotedIncorrectly,
-    VotedAbstain,
-    ReceivedUpVote,
-    ReceivedDownVote,
+    VotedAbstain, // from: voted abstain, to: does not exist
+    ReceivedUpVote, // from: who voted, to: received up vote
+    ReceivedDownVote, // from: who voted, to: received up vote
 }
 
 export interface GameEvent {
     id: DBID;
     from: DBID; // User
+    to?: DBID; // User receiving the event...FROM "down voted" TO
     triggered: Date;
     type: GameEventType; // its a number
     lobby: DBID;

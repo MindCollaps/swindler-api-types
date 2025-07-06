@@ -9,7 +9,7 @@ export interface User {
     xp: number;
     level: number;
     gamesPlayed: number;
-    friends: User[];
+    friends: DBID[];
     admin: boolean;
     playedWords: DBID[] // Word
 }
@@ -66,7 +66,7 @@ export interface GameRules {
     rounds: number; // Default 4 - how many different games will be played
     maxPlayers: number; // Default 4
     timeLimited: boolean;
-    timeLimit: number; // In seconds
+    timeLimit?: number; // In seconds
     allowSpecialGameMode: boolean; // Later features
     membersCanAddWordLists: boolean; // Default false
     membersCanAddCustomWordLists: boolean; // Default false

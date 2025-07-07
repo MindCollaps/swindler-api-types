@@ -14,6 +14,18 @@ export interface DefaultIdReq {
     id?: DBID;
 }
 
+export type AsCreateDatabaseObject<T> =
+  // Ignore Date objects: leave as-is
+  T extends Date ? T :
+  // If T is an array, apply recursively to array elements
+  T extends Array<infer U> ? Array<AsCreateDatabaseObject<U>> :
+  // If T is an object with 'id', omit 'id' and recurse on properties
+  T extends object ? {
+    [K in keyof T as K extends "id" ? never : K]: AsCreateDatabaseObject<T[K]>
+  } :
+  // Otherwise, leave as-is (primitives, etc.)
+  T;
+
 export type DefaultPostReq<T extends { id: DBID }> = Omit<T, "id">;
 export type DefaultUpdateReq<T extends { id: DBID }> = Partial<T> & Required<Pick<T, 'id'>>;
 

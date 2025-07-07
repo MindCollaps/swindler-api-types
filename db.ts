@@ -48,7 +48,7 @@ export interface Word {
 export interface FlaggedWord {
     id: DBID;
     reporter: DBID; // User
-    wordId; DBID;
+    wordId: DBID;
     word: Word;
     reason: number; // 0=offensive,1=not usable,2=not fun,3=word is wrong (written weridly)
     message?: string;

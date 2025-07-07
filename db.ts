@@ -9,54 +9,75 @@ export interface User {
     xp: number;
     level: number;
     gamesPlayed: number;
-    friends: User[];
+    userFriends: UserFriends[];
+    friendOf: UserFriends[];
     admin: boolean;
-    playedWords: DBID[] // Word
+    
+    playedWords: Word[];
+    staredWordLists: StarredList[];
+    foundedLobbies: Lobby[];
+    flaggedWords: FlaggedWord[];
+    ownedWordLists: WordList[];
+    initiatedEvents: GameEvent[];
+    receivedEvents: GameEvent[];
+}
+
+export interface StarredList {
+    id: DBID;
+    wordlistId: DBID;
+}
+
+export interface UserFriends {
+    id: DBID;
+    userId: DBID;
+    friendId: DBID;
+    createdAt: Date;
+    status: string;
 }
 
 export interface Word {
     id: DBID;
     word: string;
     isCustom: boolean;
-    from?: DBID; // User
-}
+    fromUserId?: DBID; // User
+    worldLists: WordList[];
+    flagged:    FlaggedWord[];
+    games:      Game[];
+    }
 
 export interface FlaggedWord {
     id: DBID;
     reporter: DBID; // User
+    wordId; DBID;
     word: Word;
     reason: number; // 0=offensive,1=not usable,2=not fun,3=word is wrong (written weridly)
     message?: string;
+    reporterUserId?: DBID;
 }
 
 export interface WordList {
     id: DBID;
-    from?: DBID; // User
+    founderId?: DBID; // User
     words: Word[];
     shared: boolean;
     public: boolean;
     system: boolean; // Is predefined word list
     stars: DBID[]; // User
-}
-
-export interface UsersWordLists {
-    id: DBID;
-    user: DBID;
-    wordList: DBID;
+    usersWorldLists: User[];
 }
 
 export interface Lobby {
     id: DBID;
-    founder: DBID; // User
+    founderId: DBID; // User
     founded: Date;
     players: DBID[]; // User
-    wordLists: WordList[];
-    gameRules: GameRules;
     token: string;
     public: boolean;
     gameStarted: boolean;
-    game?: DBID;
+    gameId?: DBID;
     round: number; // Number of games played
+
+    gameRules: GameRules;
     gameEvents: GameEvent[];
 }
 
@@ -70,15 +91,15 @@ export interface GameRules {
     allowSpecialGameMode: boolean; // Later features
     membersCanAddWordLists: boolean; // Default false
     membersCanAddCustomWordLists: boolean; // Default false
-    lobby: DBID;
+    lobbyId: DBID;
 }
 
 export interface Game {
     id: DBID;
-    lobby: Lobby;
+    lobbyId: Lobby;
     round: number;
     turn: number; // Number from 0 - (lobby.players.length -1) telling the game whos turn it is as index of lobby.players[]
-    word: Word;
+    wordId: Word;
     imposter: DBID; // User
     specialGameMode: number; // Later features
 }
@@ -93,9 +114,9 @@ export enum GameEventType {
 
 export interface GameEvent {
     id: DBID;
-    from: DBID; // User
-    to?: DBID; // User receiving the event...FROM "down voted" TO
+    initiatorId: DBID; // User
+    receiverId?: DBID; // User receiving the event...FROM "down voted" TO
     triggered: Date;
     type: GameEventType; // its a number
-    lobby: DBID;
+    lobbyId: DBID;
 }

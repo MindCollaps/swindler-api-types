@@ -4,7 +4,7 @@ export type DBID = number;
 export let DefaultGameRules: GameRules = {
     id: 0,
     allowSpecialGameMode: false,
-    lobby: 0,
+    lobbyId: 0,
     maxPlayers: 4,
     maxRounds: 4,
     membersCanAddCustomWordLists: false,

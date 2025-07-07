@@ -1,4 +1,5 @@
 import type { DBID } from ".";
+import type { AsCreateDatabaseObject } from "./request";
 
 export interface User {
     id: DBID;
@@ -9,17 +10,17 @@ export interface User {
     xp: number;
     level: number;
     gamesPlayed: number;
-    userFriends: UserFriends[];
-    friendOf: UserFriends[];
+    userFriends: DBID[];
+    friendOf: DBID[];
     admin: boolean;
     
-    playedWords: Word[];
-    staredWordLists: StarredList[];
-    foundedLobbies: Lobby[];
-    flaggedWords: FlaggedWord[];
-    ownedWordLists: WordList[];
-    initiatedEvents: GameEvent[];
-    receivedEvents: GameEvent[];
+    playedWords: DBID[];
+    staredWordLists: DBID[];
+    foundedLobbies: DBID[];
+    flaggedWords: DBID[];
+    ownedWordLists: DBID[];
+    initiatedEvents: DBID[];
+    receivedEvents: DBID[];
 }
 
 export interface StarredList {
@@ -43,7 +44,7 @@ export interface Word {
     worldLists: WordList[];
     flagged:    FlaggedWord[];
     games:      Game[];
-    }
+}
 
 export interface FlaggedWord {
     id: DBID;
@@ -68,16 +69,17 @@ export interface WordList {
 
 export interface Lobby {
     id: DBID;
-    founderId: DBID; // User
+    founder: User; // User
     founded: Date;
-    players: DBID[]; // User
+    players: User[]; // User
     token: string;
     public: boolean;
     gameStarted: boolean;
     gameId?: DBID;
     round: number; // Number of games played
+    wordLists: WordList[];
 
-    gameRules: GameRules;
+    gameRules?: GameRules;
     gameEvents: GameEvent[];
 }
 
@@ -99,7 +101,7 @@ export interface Game {
     lobbyId: Lobby;
     round: number;
     turn: number; // Number from 0 - (lobby.players.length -1) telling the game whos turn it is as index of lobby.players[]
-    wordId: Word;
+    word?: Word;
     imposter: DBID; // User
     specialGameMode: number; // Later features
 }
